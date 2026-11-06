@@ -5,7 +5,7 @@ async function ingresar(page, correo = 'analista@demo.local') {
   await page.getByLabel('Contraseña', { exact: true }).fill('Practica2026!');
   await page.getByRole('button', { name: 'Ingresar', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Candidatos', exact: true })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Ver detalle de Ana', exact: true })).toBeVisible();
+  await expect(page.getByRole('row').filter({ hasText: 'DEMO-001' }).getByRole('link', { name: 'Ver detalle de Ana', exact: true })).toBeVisible();
 }
 test('registro, búsqueda, postulación, estado e historial con Spring Boot', async ({ page }) => {
   await ingresar(page);
@@ -64,7 +64,7 @@ test('permisos de coordinador, navegación y vista móvil', async ({ page }) => 
     await expect(page.getByRole('heading', { name: heading, exact: true })).toBeVisible();
   }
   await page.getByRole('link', { name: 'Candidatos', exact: true }).click();
-  await expect(page.getByRole('link', { name: 'Ver detalle de Ana', exact: true })).toBeVisible();
+  await expect(page.getByRole('row').filter({ hasText: 'DEMO-001' }).getByRole('link', { name: 'Ver detalle de Ana', exact: true })).toBeVisible();
   await page.screenshot({ path: 'test-results/03-movil-coordinador.png', fullPage: true });
   await page.goto('/#/candidatos/nuevo');
   await expect(page.getByRole('heading', { name: 'Candidatos', exact: true })).toBeVisible();
