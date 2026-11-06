@@ -1,0 +1,418 @@
+/* Paleta azul y estructura de encabezado, menú, contenido y pie del prototipo GA5. */
+:root {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #183348;
+  background: #f4f6f9;
+  font-synthesis: none;
+  line-height: 1.55;
+  font-size: 16px;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+a {
+  color: #004080;
+  text-underline-offset: 3px;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+button,
+.enlace-boton {
+  min-height: 44px;
+  border: 1px solid #8ba5b8;
+  border-radius: 7px;
+  background: white;
+  padding: 9px 16px;
+  color: #143c5b;
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+button:hover,
+.enlace-boton:hover {
+  background: #e9f1f8;
+}
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.primario {
+  background: #004080;
+  color: white;
+  border-color: #004080;
+}
+.primario:hover {
+  background: #003264;
+  color: white;
+}
+input,
+select,
+textarea {
+  border: 1px solid #91a5b5;
+  border-radius: 6px;
+  padding: 10px 12px;
+  width: 100%;
+  background: white;
+  color: #183348;
+  min-height: 44px;
+}
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+input:focus,
+select:focus,
+textarea:focus,
+button:focus-visible,
+a:focus-visible {
+  outline: 3px solid #d28b24;
+  outline-offset: 3px;
+}
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+h1 {
+  font-size: clamp(1.6rem, 3vw, 2.25rem);
+  line-height: 1.2;
+  margin: 10px 0 14px;
+}
+h2 {
+  font-size: 1.25rem;
+  line-height: 1.3;
+  margin-top: 0;
+}
+h3 {
+  font-size: 1.1rem;
+}
+.etiqueta {
+  font-size: 0.75rem;
+  letter-spacing: 0.13em;
+  font-weight: 700;
+  color: #446d88;
+}
+.nota,
+small,
+.subtle {
+  font-size: 0.86rem;
+  color: #536f82;
+}
+small {
+  display: block;
+}
+.cabecera {
+  background: #004080;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 22px 34px;
+  gap: 20px;
+}
+.cabecera strong {
+  font-size: 1.25rem;
+}
+.cabecera small {
+  color: #d1e4f4;
+}
+.sesion {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.estructura {
+  display: grid;
+  grid-template-columns: 205px minmax(0, 1fr);
+  max-width: 1500px;
+  margin: auto;
+  min-height: 76vh;
+}
+.estructura > nav {
+  background: #e8eff5;
+  border-right: 1px solid #d3dfe8;
+  padding: 28px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.estructura > nav a {
+  padding: 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  color: #294b64;
+  font-weight: 600;
+}
+.estructura > nav a.active {
+  background: white;
+  color: #004080;
+  box-shadow: inset 4px 0 #004080;
+}
+.estructura > main {
+  padding: 32px;
+  min-width: 0;
+}
+.tarjeta {
+  background: white;
+  border: 1px solid #d8e1e9;
+  border-radius: 10px;
+  padding: 24px;
+  margin: 20px 0;
+  box-shadow: 0 3px 12px #12344406;
+}
+.titulo-fila {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.titulo-fila p {
+  color: #536f82;
+}
+.buscador {
+  max-width: 550px;
+  margin-bottom: 22px;
+}
+.tabla-scroll {
+  /* Contiene también las etiquetas accesibles de los enlaces de la tabla. */
+  position: relative;
+  overflow-x: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  min-width: 630px;
+}
+th {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #506f85;
+  background: #f4f7fa;
+}
+th,
+td {
+  padding: 14px;
+  border-bottom: 1px solid #dce5ec;
+}
+td strong {
+  display: block;
+}
+.campo {
+  margin: 0 0 19px;
+}
+.rejilla-formulario {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 22px;
+}
+.acciones {
+  display: flex;
+  gap: 12px;
+}
+.mensaje {
+  padding: 14px 18px;
+  border-radius: 7px;
+  background: #eaf2f8;
+  color: #234e6b;
+  margin: 15px 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.mensaje-error {
+  background: #fff0ef;
+  color: #922921;
+  border: 1px solid #e9b5b1;
+}
+.mensaje-exito {
+  background: #edf7f0;
+  color: #205c39;
+  border: 1px solid #b2d8bf;
+}
+.error-campo {
+  color: #a32b25;
+}
+.estado {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: #e7eff8;
+  color: #204d75;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+.estado-seleccionado {
+  background: #e1f2e6;
+  color: #245b36;
+}
+.estado-rechazado {
+  background: #fce8e5;
+  color: #8d3328;
+}
+.postulaciones {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(270px, 100%), 1fr));
+  gap: 20px;
+}
+.postulaciones .tarjeta {
+  margin: 10px 0;
+}
+.cambio-estado {
+  border-top: 1px solid #d9e2e9;
+  margin-top: 18px;
+  padding-top: 18px;
+}
+.cambio-estado select,
+.cambio-estado textarea {
+  margin-bottom: 12px;
+}
+.historial-boton {
+  margin-top: 18px;
+}
+.historial li {
+  padding: 12px 0;
+  border-bottom: 1px solid #e1e8ed;
+}
+.historial p {
+  margin: 4px 0;
+}
+.datos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+.datos dt {
+  font-size: 0.8rem;
+  color: #536f82;
+}
+.datos dd {
+  margin: 5px 0;
+  overflow-wrap: anywhere;
+}
+.acceso {
+  max-width: 1100px;
+  min-height: 95vh;
+  margin: auto;
+  padding: 40px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+.acceso h1 {
+  font-size: 2.8rem;
+  color: #004080;
+}
+.acceso .tarjeta {
+  padding: 34px;
+}
+.acceso form {
+  margin: 25px 0;
+}
+.ancho {
+  width: 100%;
+}
+.ayuda {
+  max-width: 800px;
+  margin: 50px auto;
+}
+.acceso-directo {
+  text-decoration: none;
+  display: block;
+}
+.acceso-directo:hover {
+  border-color: #004080;
+}
+footer {
+  text-align: center;
+  color: #536f82;
+  padding: 24px;
+  font-size: 0.8rem;
+}
+.solo-lector,
+.saltar {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+.saltar:focus {
+  position: fixed;
+  clip: auto;
+  width: auto;
+  height: auto;
+  top: 10px;
+  left: 10px;
+  background: white;
+  padding: 10px;
+  z-index: 20;
+}
+@media (max-width: 760px) {
+  .acceso {
+    display: block;
+    padding: 24px;
+    min-height: auto;
+  }
+  .acceso h1 {
+    font-size: 2rem;
+  }
+  .cabecera {
+    padding: 18px;
+    align-items: flex-start;
+  }
+  .sesion {
+    align-items: flex-end;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .sesion > span {
+    text-align: right;
+  }
+  .estructura {
+    display: block;
+  }
+  .estructura > nav {
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 12px;
+    border: 0;
+  }
+  .estructura > nav a {
+    white-space: nowrap;
+  }
+  .estructura > main {
+    padding: 22px 16px;
+  }
+  .titulo-fila {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .rejilla-formulario,
+  .datos {
+    grid-template-columns: 1fr;
+  }
+  .tarjeta {
+    padding: 18px;
+  }
+  .ayuda {
+    margin: 20px 12px;
+  }
+  .acciones {
+    flex-wrap: wrap;
+  }
+}
