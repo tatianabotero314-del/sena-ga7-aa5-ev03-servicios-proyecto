@@ -18,54 +18,11 @@
         "operationId": "get_api_auth_csrf",
         "responses": {
           "200": {
-            "description": "token y headerName; solicitar otra vez después del login/logout."
-          },
-          "400": {
-            "description": "Datos inválidos",
+            "description": "token y headerName; solicitar otra vez después del login/logout.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Sesión o credenciales inválidas",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Permiso o CSRF inválidos",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Registro inexistente",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflicto de negocio",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "$ref": "#/components/schemas/Csrf"
                 }
               }
             }
@@ -81,14 +38,11 @@
         "operationId": "post_api_auth_login",
         "responses": {
           "200": {
-            "description": "id, nombre, correo y rol; establece una cookie de sesión HttpOnly."
-          },
-          "400": {
-            "description": "Datos inválidos",
+            "description": "id, nombre, correo y rol; establece una cookie de sesión HttpOnly.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "$ref": "#/components/schemas/Usuario"
                 }
               }
             }
@@ -112,30 +66,11 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Registro inexistente",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflicto de negocio",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
           }
         },
         "security": [
           {
+            "sesion": [],
             "csrf": []
           }
         ],
@@ -172,50 +107,17 @@
         "operationId": "get_api_auth_me",
         "responses": {
           "200": {
-            "description": "id, nombre, correo y rol, sin contraseña/hash."
-          },
-          "400": {
-            "description": "Datos inválidos",
+            "description": "id, nombre, correo y rol, sin contraseña/hash.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "$ref": "#/components/schemas/Usuario"
                 }
               }
             }
           },
           "401": {
             "description": "Sesión o credenciales inválidas",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Permiso o CSRF inválidos",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Registro inexistente",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflicto de negocio",
             "content": {
               "application/json": {
                 "schema": {
@@ -241,48 +143,8 @@
           "204": {
             "description": "Sin cuerpo; invalida la sesión."
           },
-          "400": {
-            "description": "Datos inválidos",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Sesión o credenciales inválidas",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
           "403": {
             "description": "Permiso o CSRF inválidos",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Registro inexistente",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflicto de negocio",
             "content": {
               "application/json": {
                 "schema": {
@@ -307,7 +169,17 @@
         "operationId": "get_api_candidatos",
         "responses": {
           "200": {
-            "description": "Lista de candidatos; [] si no hay coincidencias."
+            "description": "Lista de candidatos; [] si no hay coincidencias.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Candidato"
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Datos inválidos",
@@ -321,36 +193,6 @@
           },
           "401": {
             "description": "Sesión o credenciales inválidas",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Permiso o CSRF inválidos",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Registro inexistente",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflicto de negocio",
             "content": {
               "application/json": {
                 "schema": {
@@ -382,7 +224,14 @@
         "operationId": "post_api_candidatos",
         "responses": {
           "201": {
-            "description": "Objeto candidato con el id generado; 409 si se repite tipo/número de documento."
+            "description": "Objeto candidato con el id generado; 409 si se repite tipo/número de documento.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Candidato"
+                }
+              }
+            }
           },
           "400": {
             "description": "Datos inválidos",
@@ -406,16 +255,6 @@
           },
           "403": {
             "description": "Permiso o CSRF inválidos",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Registro inexistente",
             "content": {
               "application/json": {
                 "schema": {
@@ -460,7 +299,14 @@
         "operationId": "get_api_candidatos_id",
         "responses": {
           "200": {
-            "description": "Objeto candidato con id y los seis datos personales."
+            "description": "Objeto candidato con id y los seis datos personales.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Candidato"
+                }
+              }
+            }
           },
           "400": {
             "description": "Datos inválidos",
@@ -482,28 +328,8 @@
               }
             }
           },
-          "403": {
-            "description": "Permiso o CSRF inválidos",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
           "404": {
             "description": "Registro inexistente",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflicto de negocio",
             "content": {
               "application/json": {
                 "schema": {
@@ -537,7 +363,14 @@
         "operationId": "put_api_candidatos_id",
         "responses": {
           "200": {
-            "description": "Objeto candidato actualizado; no se cambia su identificador."
+            "description": "Objeto candidato actualizado; no se cambia su identificador.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Candidato"
+                }
+              }
+            }
           },
           "400": {
             "description": "Datos inválidos",
@@ -627,50 +460,20 @@
         "operationId": "get_api_vacantes",
         "responses": {
           "200": {
-            "description": "Lista con id, cargo, descripcion, cupos, estado y fechaApertura."
-          },
-          "400": {
-            "description": "Datos inválidos",
+            "description": "Lista con id, cargo, descripcion, cupos, estado y fechaApertura.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Vacante"
+                  }
                 }
               }
             }
           },
           "401": {
             "description": "Sesión o credenciales inválidas",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Permiso o CSRF inválidos",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Registro inexistente",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflicto de negocio",
             "content": {
               "application/json": {
                 "schema": {
@@ -694,7 +497,17 @@
         "operationId": "get_api_candidatos_id_postulaciones",
         "responses": {
           "200": {
-            "description": "Lista con id, idVacante, cargo, estado y fecha; [] si no tiene procesos."
+            "description": "Lista con id, idVacante, cargo, estado y fecha; [] si no tiene procesos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Postulacion"
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Datos inválidos",
@@ -716,28 +529,8 @@
               }
             }
           },
-          "403": {
-            "description": "Permiso o CSRF inválidos",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
           "404": {
             "description": "Registro inexistente",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflicto de negocio",
             "content": {
               "application/json": {
                 "schema": {
@@ -773,7 +566,14 @@
         "operationId": "post_api_postulaciones",
         "responses": {
           "201": {
-            "description": "Objeto {id}; crea estado En proceso e historial inicial en una transacción."
+            "description": "Objeto {id}; crea estado En proceso e historial inicial en una transacción.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Identificador"
+                }
+              }
+            }
           },
           "400": {
             "description": "Datos inválidos",
@@ -941,7 +741,17 @@
         "operationId": "get_api_postulaciones_id_historial",
         "responses": {
           "200": {
-            "description": "Lista ordenada con id, estado, responsable, observacion y fecha."
+            "description": "Lista ordenada con id, estado, responsable, observacion y fecha.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Historial"
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Datos inválidos",
@@ -963,28 +773,8 @@
               }
             }
           },
-          "403": {
-            "description": "Permiso o CSRF inválidos",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
           "404": {
             "description": "Registro inexistente",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflicto de negocio",
             "content": {
               "application/json": {
                 "schema": {
@@ -1114,6 +904,205 @@
         },
         "required": [
           "message"
+        ]
+      },
+      "Candidato": {
+        "type": "object",
+        "properties": {
+          "tipoDocumento": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10
+          },
+          "numeroDocumento": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 30
+          },
+          "nombres": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "apellidos": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "correo": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 150,
+            "format": "email"
+          },
+          "telefono": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 25
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "tipoDocumento",
+          "numeroDocumento",
+          "nombres",
+          "apellidos",
+          "correo",
+          "telefono",
+          "id"
+        ]
+      },
+      "Usuario": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "correo": {
+            "type": "string"
+          },
+          "rol": {
+            "type": "string",
+            "enum": [
+              "Analista",
+              "Coordinador"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "nombre",
+          "correo",
+          "rol"
+        ]
+      },
+      "Csrf": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "headerName": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "token",
+          "headerName"
+        ]
+      },
+      "Vacante": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "cargo": {
+            "type": "string"
+          },
+          "descripcion": {
+            "type": "string"
+          },
+          "cupos": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "estado": {
+            "type": "string",
+            "enum": [
+              "Abierta",
+              "Cerrada"
+            ]
+          },
+          "fechaApertura": {
+            "type": "string",
+            "format": "date"
+          }
+        },
+        "required": [
+          "id",
+          "cargo",
+          "descripcion",
+          "cupos",
+          "estado",
+          "fechaApertura"
+        ]
+      },
+      "Postulacion": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "idVacante": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "cargo": {
+            "type": "string"
+          },
+          "estado": {
+            "type": "string"
+          },
+          "fecha": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "idVacante",
+          "cargo",
+          "estado",
+          "fecha"
+        ]
+      },
+      "Historial": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "estado": {
+            "type": "string"
+          },
+          "responsable": {
+            "type": "string"
+          },
+          "observacion": {
+            "type": "string"
+          },
+          "fecha": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "estado",
+          "responsable",
+          "observacion",
+          "fecha"
+        ]
+      },
+      "Identificador": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "id"
         ]
       }
     },
