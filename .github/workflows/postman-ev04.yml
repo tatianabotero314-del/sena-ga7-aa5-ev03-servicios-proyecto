@@ -1,0 +1,79 @@
+name: Pruebas Postman AA5-EV04
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/postman-ev04.yml'
+      - 'postman/**'
+permissions:
+  contents: write
+jobs:
+  pruebas:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Versionar coleccion y documentacion
+        run: |
+          python3 - <<'PYCODE'
+          import base64,io,zipfile
+          zipfile.ZipFile(io.BytesIO(base64.b64decode("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"))).extractall('.')
+          PYCODE
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add postman docs/PRUEBAS_AA5_EV04.md
+          git diff --cached --quiet || git commit -m "Agregar 60 solicitudes Postman y plan de pruebas AA5-EV04"
+          git push
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+          cache-dependency-path: backend/pom.xml
+      - run: mvn -B -f backend/pom.xml verify
+      - name: Iniciar API del proyecto
+        run: |
+          java -jar backend/target/seleccion-personal-api-1.0.0.jar --spring.datasource.url='jdbc:h2:mem:ev04;DB_CLOSE_DELAY=-1' > servicio.log 2>&1 &
+          for i in $(seq 1 40); do
+            if curl -fsS http://127.0.0.1:8081/api/auth/csrf > /dev/null; then exit 0; fi
+            sleep 2
+          done
+          exit 1
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+      - name: Ejecutar coleccion Postman con Newman
+        run: |
+          npm install --no-save newman@6.2.1
+          npx newman run postman/AA5_EV04.postman_collection.json --reporters cli,json,junit --reporter-json-export resultados/newman-original.json --reporter-junit-export resultados/newman.xml | tee resultados-newman.txt
+        shell: bash -eo pipefail {0}
+      - name: Preparar reportes sin tokens
+        if: always()
+        run: |
+          python3 - <<'PYCODE'
+          import json,pathlib
+          f=pathlib.Path('resultados/newman-original.json')
+          if f.exists():
+              d=json.loads(f.read_text())
+              rows=[]
+              for e in d['run']['executions']:
+                  response=e.get('response',{})
+                  data=response.get('stream',{}).get('data',[])
+                  raw=bytes(data).decode('utf-8','replace')
+                  try: body=json.loads(raw)
+                  except ValueError: body=raw
+                  if isinstance(body,dict) and 'token' in body: body['token']='[omitido]'
+                  rows.append({'nombre':e['item']['name'],'metodo':e['request']['method'],'url':e['request']['url'],'estado':response.get('code'),'respuesta':body,'verificaciones':e.get('assertions',[])})
+              report={'origen':'Newman 6.2.1 - coleccion Postman AA5-EV04','estadisticas':d['run']['stats'],'fallos':d['run']['failures'],'ejecuciones':rows}
+              pathlib.Path('resultados/newman.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
+              f.unlink()
+          PYCODE
+          git bundle create historial-github.bundle --all
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Resultados-Postman-AA5-EV04
+          path: |
+            resultados
+            resultados-newman.txt
+            backend/target/surefire-reports
+            historial-github.bundle
