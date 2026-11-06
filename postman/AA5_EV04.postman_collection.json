@@ -1,0 +1,2530 @@
+{
+  "info": {
+    "name": "SENA AA5-EV04 - API seleccion de personal",
+    "description": "Laura Tatiana Ciro Botero. Pruebas reales de las 13 operaciones REST del proyecto AA5-EV03. Ejecutar todas en orden: se administran cookies, CSRF e identificadores. Base local 8081. Datos ficticios; no usar en producción.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:8081",
+      "type": "string"
+    },
+    {
+      "key": "csrf",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "candidatoId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "postulacionId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "vacanteId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "documento",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 CSRF - Reiniciar sesion de practica",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/csrf",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "csrf"
+          ]
+        },
+        "description": "Esperado: HTTP 200. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 200\",()=>pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.token).to.be.a(\"string\").and.not.empty; pm.expect(d.headerName).to.eql(\"X-CSRF-TOKEN\"); pm.collectionVariables.set(\"csrf\",d.token);});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "02 Reiniciar sesion de practica",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{csrf}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/logout",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "logout"
+          ]
+        },
+        "description": "Esperado: HTTP 204. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 204\",()=>pm.response.to.have.status(204));",
+              "pm.test(\"Sin cuerpo en HTTP 204\",()=>pm.expect(pm.response.text()).to.eql(\"\"));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "03 Acceso sin sesion",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/candidatos",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "candidatos"
+          ]
+        },
+        "description": "Esperado: HTTP 401. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 401\",()=>pm.response.to.have.status(401));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.message).to.be.a(\"string\").and.not.empty;});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "04 CSRF - Clave incorrecta",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/csrf",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "csrf"
+          ]
+        },
+        "description": "Esperado: HTTP 200. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 200\",()=>pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.token).to.be.a(\"string\").and.not.empty; pm.expect(d.headerName).to.eql(\"X-CSRF-TOKEN\"); pm.collectionVariables.set(\"csrf\",d.token);});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "05 Clave incorrecta",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{csrf}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        },
+        "description": "Esperado: HTTP 401. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios.",
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "correo",
+              "value": "analista@demo.local",
+              "type": "text"
+            },
+            {
+              "key": "password",
+              "value": "Incorrecta2026!",
+              "type": "text"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 401\",()=>pm.response.to.have.status(401));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.message).to.be.a(\"string\").and.not.empty;});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "06 CSRF - Iniciar sesion analista",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/csrf",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "csrf"
+          ]
+        },
+        "description": "Esperado: HTTP 200. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 200\",()=>pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.token).to.be.a(\"string\").and.not.empty; pm.expect(d.headerName).to.eql(\"X-CSRF-TOKEN\"); pm.collectionVariables.set(\"csrf\",d.token);});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "07 Iniciar sesion analista",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{csrf}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        },
+        "description": "Esperado: HTTP 200. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios.",
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "correo",
+              "value": "analista@demo.local",
+              "type": "text"
+            },
+            {
+              "key": "password",
+              "value": "Practica2026!",
+              "type": "text"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 200\",()=>pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.rol).to.eql(\"Analista\");});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "08 Consultar usuario actual",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/me",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "me"
+          ]
+        },
+        "description": "Esperado: HTTP 200. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 200\",()=>pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.correo).to.eql(\"analista@demo.local\"); pm.expect(d.rol).to.eql(\"Analista\");});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "09 Consultar vacantes",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/vacantes",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "vacantes"
+          ]
+        },
+        "description": "Esperado: HTTP 200. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 200\",()=>pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d).to.be.an(\"array\").and.not.empty; const v=d.find(v=>v.estado===\"Abierta\"); pm.expect(v).to.exist; pm.collectionVariables.set(\"vacanteId\",v.id);});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "10 CSRF - Registrar candidato",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/csrf",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "csrf"
+          ]
+        },
+        "description": "Esperado: HTTP 200. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 200\",()=>pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.token).to.be.a(\"string\").and.not.empty; pm.expect(d.headerName).to.eql(\"X-CSRF-TOKEN\"); pm.collectionVariables.set(\"csrf\",d.token);});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "11 Registrar candidato",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{csrf}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/candidatos",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "candidatos"
+          ]
+        },
+        "description": "Esperado: HTTP 201. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"tipoDocumento\": \"CC\", \"numeroDocumento\": \"{{documento}}\", \"nombres\": \"Laura\", \"apellidos\": \"Prueba API\", \"correo\": \"prueba@example.com\", \"telefono\": \"3001234567\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Identificador nuevo para repetir las pruebas sin borrar registros.",
+              "pm.collectionVariables.set(\"documento\",\"EV04-\"+Date.now()+\"-\"+Math.floor(Math.random()*10000));"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 201\",()=>pm.response.to.have.status(201));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.id).to.be.a(\"number\").above(0); pm.expect(d.numeroDocumento).to.eql(pm.collectionVariables.get(\"documento\")); pm.collectionVariables.set(\"candidatoId\",d.id);});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "12 CSRF - Documento duplicado",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/csrf",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "csrf"
+          ]
+        },
+        "description": "Esperado: HTTP 200. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 200\",()=>pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.token).to.be.a(\"string\").and.not.empty; pm.expect(d.headerName).to.eql(\"X-CSRF-TOKEN\"); pm.collectionVariables.set(\"csrf\",d.token);});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "13 Documento duplicado",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{csrf}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/candidatos",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "candidatos"
+          ]
+        },
+        "description": "Esperado: HTTP 409. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"tipoDocumento\": \"CC\", \"numeroDocumento\": \"{{documento}}\", \"nombres\": \"Laura\", \"apellidos\": \"Prueba API\", \"correo\": \"prueba@example.com\", \"telefono\": \"3001234567\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 409\",()=>pm.response.to.have.status(409));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.message).to.be.a(\"string\").and.not.empty;});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "14 Consultar candidato",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/candidatos/{{candidatoId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "candidatos",
+            "{{candidatoId}}"
+          ]
+        },
+        "description": "Esperado: HTTP 200. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 200\",()=>pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.id).to.eql(Number(pm.collectionVariables.get(\"candidatoId\")));});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "15 Buscar candidato",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/candidatos?busqueda={{documento}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "candidatos"
+          ],
+          "query": [
+            {
+              "key": "busqueda",
+              "value": "{{documento}}"
+            }
+          ]
+        },
+        "description": "Esperado: HTTP 200. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 200\",()=>pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d).to.have.lengthOf(1); pm.expect(d[0].numeroDocumento).to.eql(pm.collectionVariables.get(\"documento\"));});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "16 CSRF - Actualizar candidato",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/csrf",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "csrf"
+          ]
+        },
+        "description": "Esperado: HTTP 200. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 200\",()=>pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.token).to.be.a(\"string\").and.not.empty; pm.expect(d.headerName).to.eql(\"X-CSRF-TOKEN\"); pm.collectionVariables.set(\"csrf\",d.token);});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "17 Actualizar candidato",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{csrf}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/candidatos/{{candidatoId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "candidatos",
+            "{{candidatoId}}"
+          ]
+        },
+        "description": "Esperado: HTTP 200. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"tipoDocumento\": \"CC\", \"numeroDocumento\": \"{{documento}}\", \"nombres\": \"Laura\", \"apellidos\": \"Prueba API\", \"correo\": \"prueba@example.com\", \"telefono\": \"3007654321\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 200\",()=>pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.telefono).to.eql(\"3007654321\");});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "18 CSRF - Correo invalido",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/csrf",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "csrf"
+          ]
+        },
+        "description": "Esperado: HTTP 200. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 200\",()=>pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.token).to.be.a(\"string\").and.not.empty; pm.expect(d.headerName).to.eql(\"X-CSRF-TOKEN\"); pm.collectionVariables.set(\"csrf\",d.token);});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "19 Correo invalido",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{csrf}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/candidatos",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "candidatos"
+          ]
+        },
+        "description": "Esperado: HTTP 400. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"tipoDocumento\": \"CC\", \"numeroDocumento\": \"{{documento}}\", \"nombres\": \"Laura\", \"apellidos\": \"Prueba API\", \"correo\": \"sin-correo\", \"telefono\": \"3001234567\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 400\",()=>pm.response.to.have.status(400));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.message).to.be.a(\"string\").and.not.empty;});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "20 CSRF - Nombre vacio",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/csrf",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "csrf"
+          ]
+        },
+        "description": "Esperado: HTTP 200. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 200\",()=>pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.token).to.be.a(\"string\").and.not.empty; pm.expect(d.headerName).to.eql(\"X-CSRF-TOKEN\"); pm.collectionVariables.set(\"csrf\",d.token);});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "21 Nombre vacio",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{csrf}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/candidatos",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "candidatos"
+          ]
+        },
+        "description": "Esperado: HTTP 400. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"tipoDocumento\": \"CC\", \"numeroDocumento\": \"{{documento}}\", \"nombres\": \" \", \"apellidos\": \"Prueba API\", \"correo\": \"prueba@example.com\", \"telefono\": \"3001234567\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 400\",()=>pm.response.to.have.status(400));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.message).to.be.a(\"string\").and.not.empty;});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "22 CSRF - Campo adicional no permitido",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/csrf",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "csrf"
+          ]
+        },
+        "description": "Esperado: HTTP 200. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 200\",()=>pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.token).to.be.a(\"string\").and.not.empty; pm.expect(d.headerName).to.eql(\"X-CSRF-TOKEN\"); pm.collectionVariables.set(\"csrf\",d.token);});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "23 Campo adicional no permitido",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{csrf}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/candidatos",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "candidatos"
+          ]
+        },
+        "description": "Esperado: HTTP 400. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"tipoDocumento\": \"CC\", \"numeroDocumento\": \"{{documento}}\", \"nombres\": \"Laura\", \"apellidos\": \"Prueba API\", \"correo\": \"prueba@example.com\", \"telefono\": \"3001234567\", \"rol\": \"ADMIN\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 400\",()=>pm.response.to.have.status(400));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.message).to.be.a(\"string\").and.not.empty;});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "24 CSRF - JSON mal formado",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/csrf",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "csrf"
+          ]
+        },
+        "description": "Esperado: HTTP 200. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 200\",()=>pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.token).to.be.a(\"string\").and.not.empty; pm.expect(d.headerName).to.eql(\"X-CSRF-TOKEN\"); pm.collectionVariables.set(\"csrf\",d.token);});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "25 JSON mal formado",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{csrf}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/candidatos",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "candidatos"
+          ]
+        },
+        "description": "Esperado: HTTP 400. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios.",
+        "body": {
+          "mode": "raw",
+          "raw": "{",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 400\",()=>pm.response.to.have.status(400));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.message).to.be.a(\"string\").and.not.empty;});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "26 Identificador cero",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/candidatos/0",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "candidatos",
+            "0"
+          ]
+        },
+        "description": "Esperado: HTTP 400. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 400\",()=>pm.response.to.have.status(400));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.message).to.be.a(\"string\").and.not.empty;});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "27 Identificador no numerico",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/candidatos/no-numero",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "candidatos",
+            "no-numero"
+          ]
+        },
+        "description": "Esperado: HTTP 400. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 400\",()=>pm.response.to.have.status(400));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.message).to.be.a(\"string\").and.not.empty;});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "28 Candidato inexistente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/candidatos/99999999",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "candidatos",
+            "99999999"
+          ]
+        },
+        "description": "Esperado: HTTP 404. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 404\",()=>pm.response.to.have.status(404));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.message).to.be.a(\"string\").and.not.empty;});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "29 Busqueda demasiado larga",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/candidatos?busqueda=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "candidatos"
+          ],
+          "query": [
+            {
+              "key": "busqueda",
+              "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        },
+        "description": "Esperado: HTTP 400. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 400\",()=>pm.response.to.have.status(400));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.message).to.be.a(\"string\").and.not.empty;});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "30 Mutacion sin token CSRF",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/candidatos",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "candidatos"
+          ]
+        },
+        "description": "Esperado: HTTP 403. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"tipoDocumento\": \"CC\", \"numeroDocumento\": \"{{documento}}\", \"nombres\": \"Laura\", \"apellidos\": \"Prueba API\", \"correo\": \"prueba@example.com\", \"telefono\": \"3001234567\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 403\",()=>pm.response.to.have.status(403));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.message).to.be.a(\"string\").and.not.empty;});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "31 CSRF - Postulacion con identificador cero",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/csrf",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "csrf"
+          ]
+        },
+        "description": "Esperado: HTTP 200. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 200\",()=>pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.token).to.be.a(\"string\").and.not.empty; pm.expect(d.headerName).to.eql(\"X-CSRF-TOKEN\"); pm.collectionVariables.set(\"csrf\",d.token);});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "32 Postulacion con identificador cero",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{csrf}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/postulaciones",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "postulaciones"
+          ]
+        },
+        "description": "Esperado: HTTP 400. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"idCandidato\": 0, \"idVacante\": {{vacanteId}}}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 400\",()=>pm.response.to.have.status(400));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.message).to.be.a(\"string\").and.not.empty;});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "33 CSRF - Postulacion candidato inexistente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/csrf",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "csrf"
+          ]
+        },
+        "description": "Esperado: HTTP 200. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 200\",()=>pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.token).to.be.a(\"string\").and.not.empty; pm.expect(d.headerName).to.eql(\"X-CSRF-TOKEN\"); pm.collectionVariables.set(\"csrf\",d.token);});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "34 Postulacion candidato inexistente",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{csrf}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/postulaciones",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "postulaciones"
+          ]
+        },
+        "description": "Esperado: HTTP 404. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"idCandidato\": 99999999, \"idVacante\": {{vacanteId}}}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 404\",()=>pm.response.to.have.status(404));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.message).to.be.a(\"string\").and.not.empty;});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "35 CSRF - Crear postulacion",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/csrf",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "csrf"
+          ]
+        },
+        "description": "Esperado: HTTP 200. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 200\",()=>pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.token).to.be.a(\"string\").and.not.empty; pm.expect(d.headerName).to.eql(\"X-CSRF-TOKEN\"); pm.collectionVariables.set(\"csrf\",d.token);});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "36 Crear postulacion",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{csrf}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/postulaciones",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "postulaciones"
+          ]
+        },
+        "description": "Esperado: HTTP 201. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"idCandidato\": {{candidatoId}}, \"idVacante\": {{vacanteId}}}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 201\",()=>pm.response.to.have.status(201));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.id).to.be.a(\"number\").above(0); pm.collectionVariables.set(\"postulacionId\",d.id);});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "37 CSRF - Postulacion duplicada",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/csrf",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "csrf"
+          ]
+        },
+        "description": "Esperado: HTTP 200. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 200\",()=>pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.token).to.be.a(\"string\").and.not.empty; pm.expect(d.headerName).to.eql(\"X-CSRF-TOKEN\"); pm.collectionVariables.set(\"csrf\",d.token);});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "38 Postulacion duplicada",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{csrf}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/postulaciones",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "postulaciones"
+          ]
+        },
+        "description": "Esperado: HTTP 409. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"idCandidato\": {{candidatoId}}, \"idVacante\": {{vacanteId}}}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 409\",()=>pm.response.to.have.status(409));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.message).to.be.a(\"string\").and.not.empty;});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "39 Consultar postulaciones",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/candidatos/{{candidatoId}}/postulaciones",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "candidatos",
+            "{{candidatoId}}",
+            "postulaciones"
+          ]
+        },
+        "description": "Esperado: HTTP 200. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 200\",()=>pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d).to.have.lengthOf(1); pm.expect(d[0].estado).to.eql(\"En proceso\");});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "40 CSRF - Estado no permitido",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/csrf",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "csrf"
+          ]
+        },
+        "description": "Esperado: HTTP 200. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 200\",()=>pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.token).to.be.a(\"string\").and.not.empty; pm.expect(d.headerName).to.eql(\"X-CSRF-TOKEN\"); pm.collectionVariables.set(\"csrf\",d.token);});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "41 Estado no permitido",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{csrf}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/postulaciones/{{postulacionId}}/estado",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "postulaciones",
+            "{{postulacionId}}",
+            "estado"
+          ]
+        },
+        "description": "Esperado: HTTP 400. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"estado\": \"Contratado\", \"observacion\": \"Prueba ficticia\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 400\",()=>pm.response.to.have.status(400));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.message).to.be.a(\"string\").and.not.empty;});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "42 CSRF - Observacion vacia",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/csrf",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "csrf"
+          ]
+        },
+        "description": "Esperado: HTTP 200. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 200\",()=>pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.token).to.be.a(\"string\").and.not.empty; pm.expect(d.headerName).to.eql(\"X-CSRF-TOKEN\"); pm.collectionVariables.set(\"csrf\",d.token);});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "43 Observacion vacia",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{csrf}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/postulaciones/{{postulacionId}}/estado",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "postulaciones",
+            "{{postulacionId}}",
+            "estado"
+          ]
+        },
+        "description": "Esperado: HTTP 400. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"estado\": \"Seleccionado\", \"observacion\": \" \"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 400\",()=>pm.response.to.have.status(400));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.message).to.be.a(\"string\").and.not.empty;});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "44 CSRF - Actualizar estado",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/csrf",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "csrf"
+          ]
+        },
+        "description": "Esperado: HTTP 200. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 200\",()=>pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.token).to.be.a(\"string\").and.not.empty; pm.expect(d.headerName).to.eql(\"X-CSRF-TOKEN\"); pm.collectionVariables.set(\"csrf\",d.token);});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "45 Actualizar estado",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{csrf}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/postulaciones/{{postulacionId}}/estado",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "postulaciones",
+            "{{postulacionId}}",
+            "estado"
+          ]
+        },
+        "description": "Esperado: HTTP 204. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"estado\": \"Seleccionado\", \"observacion\": \"Evaluacion ficticia aprobada - prueba AA5 EV04.\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 204\",()=>pm.response.to.have.status(204));",
+              "pm.test(\"Sin cuerpo en HTTP 204\",()=>pm.expect(pm.response.text()).to.eql(\"\"));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "46 CSRF - Estado repetido",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/csrf",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "csrf"
+          ]
+        },
+        "description": "Esperado: HTTP 200. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 200\",()=>pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.token).to.be.a(\"string\").and.not.empty; pm.expect(d.headerName).to.eql(\"X-CSRF-TOKEN\"); pm.collectionVariables.set(\"csrf\",d.token);});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "47 Estado repetido",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{csrf}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/postulaciones/{{postulacionId}}/estado",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "postulaciones",
+            "{{postulacionId}}",
+            "estado"
+          ]
+        },
+        "description": "Esperado: HTTP 409. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"estado\": \"Seleccionado\", \"observacion\": \"Evaluacion ficticia aprobada - prueba AA5 EV04.\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 409\",()=>pm.response.to.have.status(409));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.message).to.be.a(\"string\").and.not.empty;});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "48 Consultar historial",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/postulaciones/{{postulacionId}}/historial",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "postulaciones",
+            "{{postulacionId}}",
+            "historial"
+          ]
+        },
+        "description": "Esperado: HTTP 200. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 200\",()=>pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d).to.have.lengthOf(2); pm.expect(d[0].estado).to.eql(\"En proceso\"); pm.expect(d[1].estado).to.eql(\"Seleccionado\"); pm.expect(d[1].responsable).to.eql(\"Analista de práctica\");});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "49 Historial inexistente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/postulaciones/99999999/historial",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "postulaciones",
+            "99999999",
+            "historial"
+          ]
+        },
+        "description": "Esperado: HTTP 404. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 404\",()=>pm.response.to.have.status(404));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.message).to.be.a(\"string\").and.not.empty;});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "50 CSRF - Cerrar sesion analista",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/csrf",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "csrf"
+          ]
+        },
+        "description": "Esperado: HTTP 200. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 200\",()=>pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.token).to.be.a(\"string\").and.not.empty; pm.expect(d.headerName).to.eql(\"X-CSRF-TOKEN\"); pm.collectionVariables.set(\"csrf\",d.token);});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "51 Cerrar sesion analista",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{csrf}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/logout",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "logout"
+          ]
+        },
+        "description": "Esperado: HTTP 204. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 204\",()=>pm.response.to.have.status(204));",
+              "pm.test(\"Sin cuerpo en HTTP 204\",()=>pm.expect(pm.response.text()).to.eql(\"\"));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "52 Verificar cierre de sesion",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/me",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "me"
+          ]
+        },
+        "description": "Esperado: HTTP 401. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 401\",()=>pm.response.to.have.status(401));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.message).to.be.a(\"string\").and.not.empty;});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "53 CSRF - Iniciar sesion coordinador",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/csrf",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "csrf"
+          ]
+        },
+        "description": "Esperado: HTTP 200. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 200\",()=>pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.token).to.be.a(\"string\").and.not.empty; pm.expect(d.headerName).to.eql(\"X-CSRF-TOKEN\"); pm.collectionVariables.set(\"csrf\",d.token);});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "54 Iniciar sesion coordinador",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{csrf}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        },
+        "description": "Esperado: HTTP 200. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios.",
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "correo",
+              "value": "coordinador@demo.local",
+              "type": "text"
+            },
+            {
+              "key": "password",
+              "value": "Practica2026!",
+              "type": "text"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 200\",()=>pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.rol).to.eql(\"Coordinador\");});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "55 Coordinador puede consultar",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/candidatos",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "candidatos"
+          ]
+        },
+        "description": "Esperado: HTTP 200. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 200\",()=>pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d).to.be.an(\"array\");});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "56 CSRF - Coordinador no puede registrar",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/csrf",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "csrf"
+          ]
+        },
+        "description": "Esperado: HTTP 200. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 200\",()=>pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.token).to.be.a(\"string\").and.not.empty; pm.expect(d.headerName).to.eql(\"X-CSRF-TOKEN\"); pm.collectionVariables.set(\"csrf\",d.token);});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "57 Coordinador no puede registrar",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{csrf}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/candidatos",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "candidatos"
+          ]
+        },
+        "description": "Esperado: HTTP 403. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"tipoDocumento\": \"CC\", \"numeroDocumento\": \"{{documento}}\", \"nombres\": \"Laura\", \"apellidos\": \"Prueba API\", \"correo\": \"prueba@example.com\", \"telefono\": \"3001234567\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 403\",()=>pm.response.to.have.status(403));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.message).to.be.a(\"string\").and.not.empty;});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "58 CSRF - Cerrar sesion coordinador",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/csrf",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "csrf"
+          ]
+        },
+        "description": "Esperado: HTTP 200. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 200\",()=>pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.token).to.be.a(\"string\").and.not.empty; pm.expect(d.headerName).to.eql(\"X-CSRF-TOKEN\"); pm.collectionVariables.set(\"csrf\",d.token);});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "59 Cerrar sesion coordinador",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{csrf}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/logout",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "logout"
+          ]
+        },
+        "description": "Esperado: HTTP 204. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 204\",()=>pm.response.to.have.status(204));",
+              "pm.test(\"Sin cuerpo en HTTP 204\",()=>pm.expect(pm.response.text()).to.eql(\"\"));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "60 Acceso final sin sesion",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/me",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "me"
+          ]
+        },
+        "description": "Esperado: HTTP 401. Ejecutar en orden en la colección; cookies de sesión automáticas. Datos ficticios."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP esperado 401\",()=>pm.response.to.have.status(401));",
+              "pm.test(\"Respuesta JSON\",()=>pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"));",
+              "const d=pm.response.json();",
+              "pm.test(\"Regla y contenido\",()=>{pm.expect(d.message).to.be.a(\"string\").and.not.empty;});",
+              "pm.test(\"Sin contraseñas ni hash\",()=>pm.expect(pm.response.text()).not.to.match(/\"(?:password|password_hash|contrasena)\"\\s*:/i));"
+            ]
+          }
+        }
+      ],
+      "response": []
+    }
+  ]
+}
